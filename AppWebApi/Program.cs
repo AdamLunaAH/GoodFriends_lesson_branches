@@ -38,6 +38,11 @@ builder.Services.Configure<JwtOptions>(
 builder.Services.Configure<DbConnectionSetsOptions>(
     options => builder.Configuration.GetSection(DbConnectionSetsOptions.Position).Bind(options));
 
+// add mysecrets
+builder.Services.Configure<MySecretOptions>(
+    options => builder.Configuration.GetSection(MySecretOptions.Position).Bind(options));
+
+
 // adding verion info
 builder.Services.Configure<VersionOptions>(options =>VersionOptions.ReadFromAssembly(options));
 
@@ -82,7 +87,7 @@ var app = builder.Build();
 }
 
 app.UseHttpsRedirection();
-app.UseCors(); 
+app.UseCors();
 
 app.UseAuthorization();
 app.MapControllers();

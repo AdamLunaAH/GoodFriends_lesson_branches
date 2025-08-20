@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Newtonsoft.Json;
@@ -13,16 +13,17 @@ namespace AppWebApi.Controllers
 {
     [ApiController]
     [Route("api/[controller]/[action]")]
-    public class AdminController : Controller
+    public class SecretController : Controller
     {
-        readonly ILogger<AdminController> _logger;
+        readonly ILogger<SecretController> _logger;
         private readonly DbConnectionSetsOptions _dbSetOptions;
         readonly AesEncryptionOptions _aesOptions;
         readonly JwtOptions _jwtOptions;
         readonly VersionOptions _versionOptions;
+        readonly MySecretOptions _mysecretOptions;
         readonly IConfiguration _configuration;
 
-        //GET: api/admin/key
+        //GET: api/secret/key
         [HttpGet()]
         [ActionName("Key")]
         [ProducesResponseType(200)]
@@ -33,7 +34,7 @@ namespace AppWebApi.Controllers
                 var keyOptions = new
                 {
                     SecretStorage = _configuration["ApplicationSecrets:SecretStorage"],
-                    MigrationUser = _configuration["MySecrets:MigrationUser"],
+                    MigrationUser = _configuration["DatabaseConnections:MigrationUser"],
                     DefaultDataUser = _configuration["DatabaseConnections:DefaultDataUser"],
                     UseDataSetWithTag = _configuration["DatabaseConnections:UseDataSetWithTag"],
                 };
@@ -45,55 +46,7 @@ namespace AppWebApi.Controllers
             }
         }
 
-        //GET: api/admin/options1
-        [HttpGet()]
-        [ActionName("Options1")]
-        [ProducesResponseType(200, Type = typeof(DbConnectionSetsOptions))]
-        public IActionResult Options1()
-        {
-            try
-            {
-                return Ok(_dbSetOptions);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        //GET: api/admin/options1
-        [HttpGet()]
-        [ActionName("Options2")]
-        [ProducesResponseType(200, Type = typeof(AesEncryptionOptions))]
-        public IActionResult Options2()
-        {
-            try
-            {
-                return Ok(_aesOptions);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        //GET: api/admin/options1
-        [HttpGet()]
-        [ActionName("Options3")]
-        [ProducesResponseType(200, Type = typeof(JwtOptions))]
-        public IActionResult Options3()
-        {
-            try
-            {
-                return Ok(_jwtOptions);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        //GET: api/admin/version
+        //GET: api/secret/version
         [HttpGet()]
         [ActionName("Version")]
         [ProducesResponseType(typeof(VersionOptions), 200)]
@@ -110,13 +63,56 @@ namespace AppWebApi.Controllers
             }
         }
 
+        //Get: api/secret/mysecret
+        [HttpGet()]
+        [ActionName("MySecret")]
+        [ProducesResponseType(200)]
+        public IActionResult mysecret()
+        {
+            try
+            {
+                var my = new
+                {
+                    Color = _configuration
+                    ["MySecrets:Color"],
+                    Number = _configuration
+                    ["MySecrets:Number"],
+                    Animal = _configuration
+                    ["MySecrets:Animal"],
 
-        public AdminController(ILogger<AdminController> logger,
+
+                };
+                return Ok(my);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //Get: api/secret/mysecretoption
+        [HttpGet()]
+        [ActionName("MySecretOption")]
+        [ProducesResponseType(200)]
+        public IActionResult mysecretoption()
+        {
+            try
+            {
+                return Ok(_mysecretOptions);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        public SecretController(ILogger<SecretController> logger,
                     IConfiguration configuration,
                     IOptions<DbConnectionSetsOptions> dbSetOptions,
                     IOptions<AesEncryptionOptions> aesOptions,
                     IOptions<JwtOptions> jwtOptions,
-                    IOptions<VersionOptions> versionOptions)
+                    IOptions<VersionOptions> versionOptions,
+                    IOptions<MySecretOptions> mysecretOptions)
         {
             _logger = logger;
 
@@ -125,6 +121,7 @@ namespace AppWebApi.Controllers
             _jwtOptions = jwtOptions.Value;
             _versionOptions = versionOptions.Value;
             _configuration = configuration;
+            _mysecretOptions = mysecretOptions.Value;
         }
     }
 }
