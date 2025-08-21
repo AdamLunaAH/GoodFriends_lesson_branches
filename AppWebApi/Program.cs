@@ -50,6 +50,11 @@ builder.Services.AddSingleton<DatabaseConnections>();
 // Registering encryption service
 builder.Services.AddTransient<Encryptions>();
 
+// add mysettings
+builder.Services.Configure<MySettingsOptions>(
+    options => builder.Configuration.GetSection(MySettingsOptions.Position).Bind(options));
+
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwaggerGen(c =>
 {
@@ -90,7 +95,7 @@ var app = builder.Build();
 }
 
 app.UseHttpsRedirection();
-app.UseCors(); 
+app.UseCors();
 
 app.UseAuthorization();
 app.MapControllers();

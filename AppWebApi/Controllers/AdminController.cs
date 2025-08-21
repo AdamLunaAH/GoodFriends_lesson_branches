@@ -15,7 +15,7 @@ using Seido.Utilities.SeedGenerator;
 namespace AppWebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]   
+    [Route("api/[controller]/[action]")]
     public class AdminController : Controller
     {
         readonly Encryptions _encryptions = null;
