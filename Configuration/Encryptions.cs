@@ -51,7 +51,7 @@ public class Encryptions
         return decryptedObject;
     }
 
-    public byte[] Pbkdf2HashToBytes(int nrBytes, string password)
+    private byte[] Pbkdf2HashToBytes(int nrBytes, string password)
     {
         byte[] registeredPasswordKeyDerivation = KeyDerivation.Pbkdf2(
             password: password,
