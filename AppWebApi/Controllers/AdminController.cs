@@ -13,7 +13,7 @@ using Seido.Utilities.SeedGenerator;
 namespace AppWebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]   
+    [Route("api/[controller]/[action]")]
     public class AdminController : Controller
     {
         readonly Encryptions _encryptions = null;
@@ -33,6 +33,8 @@ namespace AppWebApi.Controllers
         {
             try
             {
+
+                throw new Exception("Just testing error logging");
                 var info = _dbConnections.SetupInfo;
 
                 _logger.LogInformation($"{nameof(Environment)}:\n{JsonConvert.SerializeObject(info)}");
