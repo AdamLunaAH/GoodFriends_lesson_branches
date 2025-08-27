@@ -12,21 +12,21 @@ public class Encryptions
     private readonly AesEncryptionOptions _aesOption;
 
     // Logger 1
-    readonly ILogger<Encryptions> _loggerEncryption;
+    // readonly ILogger<Encryptions> _loggerEncryption;
 
-    public Encryptions(IOptions<AesEncryptionOptions> aesOptions)
-    {
-        _aesOption = aesOptions.Value;
-        _aesOption.HashKeyIv(Pbkdf2HashToBytes);
-    }
-
-    // Logger 2
-    // readonly ILogger<Encryptions> _logger;
-    // public Encryptions(IOptions<AesEncryptionOptions> aesOptions, ILogger<Encryptions> logger)
+    // public Encryptions(IOptions<AesEncryptionOptions> aesOptions)
     // {
     //     _aesOption = aesOptions.Value;
     //     _aesOption.HashKeyIv(Pbkdf2HashToBytes);
     // }
+
+    Logger 2
+    readonly ILogger<Encryptions> _logger;
+    public Encryptions(IOptions<AesEncryptionOptions> aesOptions, ILogger<Encryptions> logger)
+    {
+        _aesOption = aesOptions.Value;
+        _aesOption.HashKeyIv(Pbkdf2HashToBytes);
+    }
 
     public string AesEncryptToBase64<T>(T sourceToEncrypt)
     {
@@ -44,20 +44,20 @@ public class Encryptions
                 encryptedBytes = encryptor.TransformFinalBlock(dataset, 0, dataset.Length);
             }
             // Logger 1
-            _loggerEncryption.LogInformation($"AesEncryptToBase64 has converted {typeof(T).Name} to {encryptedBytes.Length} bytes");
+            // _loggerEncryption.LogInformation($"AesEncryptToBase64 has converted {typeof(T).Name} to {encryptedBytes.Length} bytes");
 
             // Logger 2
-            // _logger.LogInformation($"{nameof(AesEncryptToBase64)} Invoked");
+            _logger.LogInformation($"{nameof(AesEncryptToBase64)} Invoked");
 
             return Convert.ToBase64String(encryptedBytes);
         }
         catch (Exception ex)
         {
             // Logger 1
-            _loggerEncryption.LogError($"Error in {nameof(AesEncryptToBase64)}: {ex.Message}");
+            // _loggerEncryption.LogError($"Error in {nameof(AesEncryptToBase64)}: {ex.Message}");
 
             // Logger 2
-            // _logger.LogError($"Error in {nameof(AesEncryptToBase64)}: {ex.Message}");
+            _logger.LogError($"Error in {nameof(AesEncryptToBase64)}: {ex.Message}");
 
             throw;
 
@@ -81,19 +81,19 @@ public class Encryptions
             T decryptedObject = JsonConvert.DeserializeObject<T>(decryptedString);
 
             // Logger 1
-            _loggerEncryption.LogInformation($"AesDecryptFromBase64 has decrypted {typeof(T).Name} from {encryptedBytes.Length} bytes");
+            // _loggerEncryption.LogInformation($"AesDecryptFromBase64 has decrypted {typeof(T).Name} from {encryptedBytes.Length} bytes");
 
             // Logger 2
-            // _logger.LogInformation($"{nameof(AesDecryptFromBase64)} Invoked");
+            _logger.LogInformation($"{nameof(AesDecryptFromBase64)} Invoked");
             return decryptedObject;
         }
         catch (Exception ex)
         {
             // Logger 1
-            _loggerEncryption.LogError($"Error in {nameof(AesDecryptFromBase64)}: {ex.Message}");
+            // _loggerEncryption.LogError($"Error in {nameof(AesDecryptFromBase64)}: {ex.Message}");
 
             // Logger 2
-            // _logger.LogError($"Error in {nameof(AesDecryptFromBase64)}: {ex.Message}");
+            _logger.LogError($"Error in {nameof(AesDecryptFromBase64)}: {ex.Message}");
             throw;
         }
     }
@@ -118,10 +118,10 @@ public class Encryptions
     }
 
     // Logger 1
-    public Encryptions(ILogger<Encryptions> loggerEncryption, IOptions<AesEncryptionOptions> aesOptions)
-    {
-        _loggerEncryption = loggerEncryption;
-        _aesOption = aesOptions.Value;
-        _aesOption.HashKeyIv(Pbkdf2HashToBytes);
-    }
+    // public Encryptions(ILogger<Encryptions> loggerEncryption, IOptions<AesEncryptionOptions> aesOptions)
+    // {
+    //     _loggerEncryption = loggerEncryption;
+    //     _aesOption = aesOptions.Value;
+    //     _aesOption.HashKeyIv(Pbkdf2HashToBytes);
+    // }
 }
