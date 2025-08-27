@@ -20,7 +20,10 @@ public class Encryptions
     //     _aesOption.HashKeyIv(Pbkdf2HashToBytes);
     // }
 
-    Logger 2
+
+
+
+    // Logger 2
     readonly ILogger<Encryptions> _logger;
     public Encryptions(IOptions<AesEncryptionOptions> aesOptions, ILogger<Encryptions> logger)
     {
