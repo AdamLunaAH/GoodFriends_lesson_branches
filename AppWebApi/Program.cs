@@ -56,8 +56,8 @@ builder.Services.Configure<MySettingsOptions>(
 
 
 builder.Services.AddTransient<LifeTimeService>();
-//builder.Services.AddScoped<LifeTimeService>();
-//builder.Services.AddSingleton<LifeTimeService>();
+builder.Services.AddScoped<LifeTimeService>();
+builder.Services.AddSingleton<LifeTimeService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwaggerGen(c =>
