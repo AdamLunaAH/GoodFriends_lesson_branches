@@ -54,6 +54,13 @@ builder.Services.AddTransient<LifeTimeService>();
 //builder.Services.AddScoped<LifeTimeService>();
 //builder.Services.AddSingleton<LifeTimeService>();
 
+
+#if DEBUG
+    builder.Services.AddTransient<IGreeter, GoodMorning>();
+#else
+    builder.Services.AddTransient<IGreeter, GoodEvening>();
+#endif
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSwaggerGen(c =>
 {
