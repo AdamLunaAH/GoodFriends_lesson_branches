@@ -36,7 +36,7 @@ namespace AppWebApi.Controllers
             try
             {
 
-                throw new Exception("Just testing error logging");
+                // throw new Exception("Just testing error logging");
                 var info = _dbConnections.SetupInfo;
 
                 _logger.LogInformation($"{nameof(Environment)}:\n{JsonConvert.SerializeObject(info)}");
@@ -250,7 +250,6 @@ namespace AppWebApi.Controllers
         }
 
         public AdminController(Encryptions encryptions, DatabaseConnections dbConnections, ILogger<AdminController> logger,
-        // ILogger<Encryptions> loggerEncryption,
                     IConfiguration configuration,
                     IOptions<DbConnectionSetsOptions> dbSetOptions,
                     IOptions<AesEncryptionOptions> aesOptions,
@@ -258,11 +257,7 @@ namespace AppWebApi.Controllers
         {
             _encryptions = encryptions;
             _logger = logger;
-
-            // _loggerEncryption = loggerEncryption;
-
             _dbConnections = dbConnections;
-
             _dbSetOptions = dbSetOptions.Value;
             _aesOptions = aesOptions.Value;
             _jwtOptions = jwtOptions.Value;
