@@ -20,6 +20,8 @@ namespace AppWebApi.Controllers
         readonly DatabaseConnections _dbConnections = null;
         readonly ILogger<AdminController> _logger;
 
+        // readonly ILogger<Encryptions> _loggerEncryption;
+
         private readonly DbConnectionSetsOptions _dbSetOptions;
         readonly AesEncryptionOptions _aesOptions;
         readonly JwtOptions _jwtOptions;
@@ -197,11 +199,14 @@ namespace AppWebApi.Controllers
                     .Select(goodQuote => new Quote(goodQuote))
                     .Select(q => _encryptions.AesEncryptToBase64<Quote>(q)).ToList();
 
+                // _loggerEncryption.LogInformation($"Encrypted quote: {quotes.FirstOrDefault()}");
+
                 return Ok(quotes);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"{nameof(EncryptedQuotes)}: {ex.Message}");
+                // _loggerEncryption.LogError($"{nameof(EncryptedQuotes)}: {ex.Message}");
                 return BadRequest(ex.Message);
             }
         }
@@ -216,7 +221,10 @@ namespace AppWebApi.Controllers
             try
             {
                 _logger.LogInformation($"{nameof(DecryptedQuote)}");
+
+
                 var decrypted = _encryptions.AesDecryptFromBase64<Quote>(encryptedQuote);
+                // _loggerEncryption.LogInformation($"Encrypted quote: {encryptedQuote}");
 
                 return Ok(decrypted);
             }
@@ -242,6 +250,7 @@ namespace AppWebApi.Controllers
         }
 
         public AdminController(Encryptions encryptions, DatabaseConnections dbConnections, ILogger<AdminController> logger,
+        // ILogger<Encryptions> loggerEncryption,
                     IConfiguration configuration,
                     IOptions<DbConnectionSetsOptions> dbSetOptions,
                     IOptions<AesEncryptionOptions> aesOptions,
@@ -249,6 +258,9 @@ namespace AppWebApi.Controllers
         {
             _encryptions = encryptions;
             _logger = logger;
+
+            // _loggerEncryption = loggerEncryption;
+
             _dbConnections = dbConnections;
 
             _dbSetOptions = dbSetOptions.Value;
