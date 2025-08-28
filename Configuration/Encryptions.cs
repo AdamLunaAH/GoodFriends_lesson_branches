@@ -29,6 +29,7 @@ public class Encryptions
     {
         _aesOption = aesOptions.Value;
         _aesOption.HashKeyIv(Pbkdf2HashToBytes);
+        _logger = logger;
     }
 
     public string AesEncryptToBase64<T>(T sourceToEncrypt)
