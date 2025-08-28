@@ -48,19 +48,19 @@ builder.Services.Configure<VersionOptions>(options =>VersionOptions.ReadFromAsse
 builder.Services.AddSingleton<DatabaseConnections>();
 
 // adding DbContexts
-builder.Services.AddDbContext<MainDbContext>((serviceProvider, options) => 
-{ 
-    var configuration = serviceProvider.GetRequiredService<IConfiguration>(); 
+builder.Services.AddDbContext<MainDbContext>((serviceProvider, options) =>
+{
+    var configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
-    // var connectionString = configuration.GetConnectionString("SqlServerDocker");
-    // options.UseSqlServer(connectionString, options => options.EnableRetryOnFailure());
+    var connectionString = configuration.GetConnectionString("SqlServerDocker");
+    options.UseSqlServer(connectionString, options => options.EnableRetryOnFailure());
 
     // var connectionString = configuration.GetConnectionString("MySqlDocker");
     // options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
     //     b => b.SchemaBehavior(Pomelo.EntityFrameworkCore.MySql.Infrastructure.MySqlSchemaBehavior.Translate, (schema, table) => $"{schema}_{table}"));
 
-    var connectionString = configuration.GetConnectionString("PostgreSqlDocker");
-    options.UseNpgsql(connectionString);
+    // var connectionString = configuration.GetConnectionString("PostgreSqlDocker");
+    // options.UseNpgsql(connectionString);
 });
 
 
@@ -109,7 +109,7 @@ var app = builder.Build();
 }
 
 app.UseHttpsRedirection();
-app.UseCors(); 
+app.UseCors();
 
 app.UseAuthorization();
 app.MapControllers();
