@@ -48,6 +48,11 @@ builder.Services.Configure<VersionOptions>(options =>VersionOptions.ReadFromAsse
 // Registering database connections service
 builder.Services.AddSingleton<DatabaseConnections>();
 
+builder.Services.AddSingleton<ICustomerService, CustomerService>();
+
+builder.Services.AddSingleton<Encryptions>();
+builder.Services.AddScoped<IEncryptionService, EncryptionService>();
+
 // adding encryption
 builder.Services.AddTransient<Encryptions>();
 
@@ -91,7 +96,7 @@ var app = builder.Build();
 }
 
 app.UseHttpsRedirection();
-app.UseCors(); 
+app.UseCors();
 
 app.UseAuthorization();
 app.MapControllers();
