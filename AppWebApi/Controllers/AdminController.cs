@@ -15,7 +15,7 @@ using Seido.Utilities.SeedGenerator;
 namespace AppWebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]   
+    [Route("api/[controller]/[action]")]
     public class AdminController : Controller
     {
         readonly Encryptions _encryptions = null;
@@ -118,8 +118,39 @@ namespace AppWebApi.Controllers
         {
             try
             {
-                return Ok(_dbSetOptions);
+                // Deep copy and resolve connection strings
+                var resolved = new DbConnectionSetsOptions
+                {
+                    DataSets = _dbSetOptions.DataSets?.Select(ds => new DbSetDetailOptions
+                    {
+                        DbTag = ds.DbTag,
+                        DbServer = ds.DbServer,
+                        DbConnections = ds.DbConnections?.Select(conn => new DbConnectionDetailOptions
+                        {
+                            DbUserLogin = conn.DbUserLogin,
+                            DbConnection = conn.DbConnection,
+                            DbConnectionString = _configuration.GetConnectionString(conn.DbConnection)
+                        }).ToList()
+                    }).ToList(),
+                    IdentitySets = _dbSetOptions.IdentitySets?.Select(ds => new DbSetDetailOptions
+                    {
+                        DbTag = ds.DbTag,
+                        DbServer = ds.DbServer,
+                        DbConnections = ds.DbConnections?.Select(conn => new DbConnectionDetailOptions
+                        {
+                            DbUserLogin = conn.DbUserLogin,
+                            DbConnection = conn.DbConnection,
+                            DbConnectionString = _configuration.GetConnectionString(conn.DbConnection)
+                        }).ToList()
+                    }).ToList()
+                };
+                return Ok(resolved);
             }
+
+            // try
+            // {
+            //     return Ok(_dbSetOptions);
+            // }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
