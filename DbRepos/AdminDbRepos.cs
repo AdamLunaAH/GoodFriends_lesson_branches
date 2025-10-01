@@ -25,21 +25,60 @@ public class AdminDbRepos
     }
 
     // Create and add rooms and building
+    // public async Task<ResponseItemDto<GstUsrInfoAllDto>> CreateDataAsync()
+    // {
+    //     // Safety: don’t duplicate if already exists
+    //     // if (await _dbContext.Buildings.AnyAsync())
+    //     // {
+    //     //     _logger.LogInformation("Buildings already exist. Skipping CreateData.");
+    //     //     return await DbInfo();
+    //     // }
+
+    //     // Empty and create
+    //     _dbContext.Rooms.RemoveRange(_dbContext.Rooms);
+    //     _dbContext.Buildings.RemoveRange(_dbContext.Buildings);
+    //     await _dbContext.SaveChangesAsync();
+
+
+    //     var buildings = new List<BuildingDbM>
+    // {
+    //     new BuildingDbM { BuildingName = "North Wing", BuildingNumber = 1 },
+    //     new BuildingDbM { BuildingName = "South Wing", BuildingNumber = 2 },
+    //     new BuildingDbM { BuildingName = "East Wing", BuildingNumber = 3 }
+    // };
+
+    //     // Add rooms: 4 per building
+    //     int roomCounter = 1;
+    //     foreach (var building in buildings)
+    //     {
+    //         for (int i = 1; i <= 4; i++)
+    //         {
+    //             building.RoomDbM.Add(new RoomDbM
+    //             {
+    //                 RoomName = $"Room {roomCounter}",
+    //                 RoomLevel = i,
+    //             });
+    //             roomCounter++;
+    //         }
+    //     }
+
+    //     _dbContext.Buildings.AddRange(buildings);
+
+    //     LogChangeTracker();
+    //     await _dbContext.SaveChangesAsync();
+    //     LogChangeTracker();
+
+    //     return await DbInfo();
+    // }
+
     public async Task<ResponseItemDto<GstUsrInfoAllDto>> CreateDataAsync()
     {
-        // Safety: don’t duplicate if already exists
-        // if (await _dbContext.Buildings.AnyAsync())
-        // {
-        //     _logger.LogInformation("Buildings already exist. Skipping CreateData.");
-        //     return await DbInfo();
-        // }
-
-        // Empty and create
+        // 🔄 Clear old data first
         _dbContext.Rooms.RemoveRange(_dbContext.Rooms);
         _dbContext.Buildings.RemoveRange(_dbContext.Buildings);
         await _dbContext.SaveChangesAsync();
 
-
+        // Create 3 buildings
         var buildings = new List<BuildingDbM>
     {
         new BuildingDbM { BuildingName = "North Wing", BuildingNumber = 1 },
@@ -47,7 +86,7 @@ public class AdminDbRepos
         new BuildingDbM { BuildingName = "East Wing", BuildingNumber = 3 }
     };
 
-        // Add rooms: 4 per building
+        // Assign 12 rooms (4 per building)
         int roomCounter = 1;
         foreach (var building in buildings)
         {
@@ -56,20 +95,23 @@ public class AdminDbRepos
                 building.RoomDbM.Add(new RoomDbM
                 {
                     RoomName = $"Room {roomCounter}",
-                    RoomLevel = i,
+                    RoomLevel = i
                 });
                 roomCounter++;
             }
         }
 
+        // Save to DB
         _dbContext.Buildings.AddRange(buildings);
 
         LogChangeTracker();
         await _dbContext.SaveChangesAsync();
         LogChangeTracker();
 
+        // Return DB info summary
         return await DbInfo();
     }
+
 
     public async Task<ResponseItemDto<GstUsrInfoAllDto>> InfoAsync() => await DbInfo();
 

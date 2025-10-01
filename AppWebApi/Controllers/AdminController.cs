@@ -29,21 +29,39 @@ namespace AppWebApi.Controllers
         [ProducesResponseType(200, Type = typeof(DatabaseConnections.SetupInformation))]
         public async Task<IActionResult> CreateData()
         {
+
             try
             {
-                // var info = await (_service as AdminDbRepos)?.CreateDataAsync();
-
+                // if (_service is AdminDbRepos repo)
+                // {
                 var info = await _service.CreateDataAsync();
-                if (info == null)
-                    return BadRequest("Admin service not available for CreateData");
-
+                _logger.LogInformation($"{nameof(CreateData)}:\n{JsonConvert.SerializeObject(info)}");
                 return Ok(info);
+                // }
+
+                // return BadRequest("Admin service not available for CreateData");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while creating building/room data");
                 return BadRequest(ex.Message);
             }
+
+            // try
+            // {
+            //     // var info = await (_service as AdminDbRepos)?.CreateDataAsync();
+
+            //     var info = await _service.CreateDataAsync();
+            //     if (info == null)
+            //         return BadRequest("Admin service not available for CreateData");
+
+            //     return Ok(info);
+            // }
+            // catch (Exception ex)
+            // {
+            //     _logger.LogError(ex, "Error while creating building/room data");
+            //     return BadRequest(ex.Message);
+            // }
         }
 
 
