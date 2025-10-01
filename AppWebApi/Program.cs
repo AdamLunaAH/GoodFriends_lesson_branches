@@ -70,6 +70,14 @@ builder.Services.AddScoped<IAddressesService, AddressesServiceDb>();
 builder.Services.AddScoped<IPetsService, PetsServiceDb>();
 builder.Services.AddScoped<IQuotesService, QuotesServiceDb>();
 
+builder.Services.AddScoped<BuildingsDbRepos>();
+builder.Services.AddScoped<RoomsDbRepos>();
+
+builder.Services.AddScoped<IBuildingsService, BuildingsServiceDb>();
+builder.Services.AddScoped<IRoomsService, RoomsServiceDb>();
+
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -84,7 +92,7 @@ var app = builder.Build();
 }
 
 app.UseHttpsRedirection();
-app.UseCors(); 
+app.UseCors();
 
 app.UseAuthorization();
 app.MapControllers();

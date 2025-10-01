@@ -11,7 +11,7 @@ using DbContext.Extensions;
 namespace DbContext;
 
 //DbContext namespace is a fundamental EFC layer of the database context and is
-//used for all Database connection as well as for EFC CodeFirst migration and database updates 
+//used for all Database connection as well as for EFC CodeFirst migration and database updates
 public class MainDbContext : Microsoft.EntityFrameworkCore.DbContext
 {
 #if DEBUG
@@ -26,7 +26,10 @@ public class MainDbContext : Microsoft.EntityFrameworkCore.DbContext
     public DbSet<FriendDbM> Friends { get; set; }
     public DbSet<AddressDbM> Addresses { get; set; }
     public DbSet<PetDbM> Pets { get; set; }
-    public DbSet<QuoteDbM> Quotes { get; set; }    
+    public DbSet<QuoteDbM> Quotes { get; set; }
+    public DbSet<BuildingDbM> Buildings { get; set; }
+    public DbSet<RoomDbM> Rooms { get; set; }
+
     #endregion
 
     #region constructors
@@ -56,7 +59,7 @@ public class MainDbContext : Microsoft.EntityFrameworkCore.DbContext
 
             b.Navigation("FriendDbM");
         });
-*/        
+*/
         modelBuilder.Entity("DbModels.FriendDbM", b =>
         {
             b.HasOne("DbModels.AddressDbM", "AddressDbM")
@@ -66,8 +69,16 @@ public class MainDbContext : Microsoft.EntityFrameworkCore.DbContext
 
             b.Navigation("AddressDbM");
         });
+
+        modelBuilder.Entity<RoomDbM>(entity =>
+    {
+        entity.HasOne(r => r.BuildingDbM)
+                .WithMany(b => b.RoomDbM)
+                .HasForeignKey(r => r.BuildingId)
+                .OnDelete(DeleteBehavior.SetNull);
+    });
         #endregion
-        
+
         base.OnModelCreating(modelBuilder);
     }
 
@@ -75,7 +86,7 @@ public class MainDbContext : Microsoft.EntityFrameworkCore.DbContext
     public class SqlServerDbContext : MainDbContext
     {
         public SqlServerDbContext() { }
-        public SqlServerDbContext(DbContextOptions options) 
+        public SqlServerDbContext(DbContextOptions options)
             : base(options) { }
 
 

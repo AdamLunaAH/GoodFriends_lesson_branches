@@ -14,13 +14,38 @@ using Microsoft.Extensions.Options;
 namespace AppWebApi.Controllers
 {
     [ApiController]
-    [Route("api/[controller]/[action]")]   
+    [Route("api/[controller]/[action]")]
     public class AdminController : Controller
     {
         readonly DatabaseConnections _dbConnections;
         readonly IAdminService _service;
         readonly ILogger<AdminController> _logger;
         readonly VersionOptions _versionOptions;
+
+        // create and add room and building data to server
+        //GET: api/admin/createdata
+        [HttpGet()]
+        [ActionName("CreateData")]
+        [ProducesResponseType(200, Type = typeof(DatabaseConnections.SetupInformation))]
+        public async Task<IActionResult> CreateData()
+        {
+            try
+            {
+                // var info = await (_service as AdminDbRepos)?.CreateDataAsync();
+
+                var info = await _service.CreateDataAsync();
+                if (info == null)
+                    return BadRequest("Admin service not available for CreateData");
+
+                return Ok(info);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while creating building/room data");
+                return BadRequest(ex.Message);
+            }
+        }
+
 
         //GET: api/admin/environment
         [HttpGet()]
@@ -78,7 +103,7 @@ namespace AppWebApi.Controllers
 
                 _logger.LogInformation($"{nameof(RemoveSeed)}: {nameof(seededArg)}: {seededArg}");
                 var info = await _service.RemoveSeedAsync(seededArg);
-                return Ok(info);        
+                return Ok(info);
             }
             catch (Exception ex)
             {

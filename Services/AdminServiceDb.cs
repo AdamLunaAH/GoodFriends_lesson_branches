@@ -4,7 +4,7 @@ using Models.DTO;
 using DbRepos;
 
 namespace Services;
-    
+
 public class AdminServiceDb : IAdminService
 {
     private readonly AdminDbRepos _repo = null;
@@ -21,8 +21,11 @@ public class AdminServiceDb : IAdminService
         _logger = logger;
     }
     #endregion
-    
+
     //Simple 1:1 calls in this case, but as Services expands, this will no longer need to be the case
+
+    public Task<ResponseItemDto<GstUsrInfoAllDto>> CreateDataAsync() => _repo.CreateDataAsync();
+
     public Task<ResponseItemDto<GstUsrInfoAllDto>> GuestInfoAsync() => _repo.InfoAsync();
     public Task<ResponseItemDto<GstUsrInfoAllDto>> SeedAsync(int nrOfItems) => _repo.SeedAsync(nrOfItems);
     public Task<ResponseItemDto<GstUsrInfoAllDto>> RemoveSeedAsync(bool seeded) => _repo.RemoveSeedAsync(seeded);

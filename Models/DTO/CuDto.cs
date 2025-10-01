@@ -104,3 +104,48 @@ public class QuoteCuDto
         FriendsId = org.Friends?.Select(i => i.FriendId).ToList();
     }
 }
+
+
+// namespace Models.DTO;
+public class BuildingCuDto
+{
+    public virtual int? BuildingId { get; set; }
+
+    public virtual string BuildingName { get; set; }
+    public virtual int BuildingNumber { get; set; }
+
+    // A building can have many rooms
+    public virtual List<int> RoomsId { get; set; } = new();
+
+    public BuildingCuDto() { }
+
+    public BuildingCuDto(IBuilding org)
+    {
+        BuildingId = org.BuildingId;
+        BuildingName = org.BuildingName;
+        BuildingNumber = org.BuildingNumber;
+        RoomsId = org.Rooms?.Select(i => i.RoomId).ToList() ?? new List<int>();
+    }
+}
+
+
+public class RoomCuDto
+{
+    public virtual int? RoomId { get; set; }
+
+    public virtual string RoomName { get; set; }
+    public virtual int RoomLevel { get; set; }
+
+    // foreign key to Building
+    public virtual int? BuildingId { get; set; }
+
+    public RoomCuDto() { }
+
+    public RoomCuDto(IRoom org)
+    {
+        RoomId = org.RoomId;
+        RoomName = org.RoomName;
+        RoomLevel = org.RoomLevel;
+        BuildingId = org?.Building?.BuildingId;
+    }
+}
