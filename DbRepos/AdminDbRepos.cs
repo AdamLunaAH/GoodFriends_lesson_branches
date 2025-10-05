@@ -13,6 +13,7 @@ namespace DbRepos;
 public class AdminDbRepos
 {
     private const string _seedSource = "./app-seeds.json";
+    private static bool IsAppSeedsEmpty = false;
     private readonly ILogger<AdminDbRepos> _logger;
     private Encryptions _encryptions;
     private readonly MainDbContext _dbContext;
@@ -149,8 +150,31 @@ public class AdminDbRepos
         //First of all make sure the database is cleared from all seeded data
         await RemoveSeedAsync(true);
 
-        //Create a seeder
         var fn = Path.GetFullPath(_seedSource);
+
+        var info = new FileInfo(fn);
+        if (info.Length == 0)
+        {
+            IsAppSeedsEmpty = true;
+        }
+
+        if (IsAppSeedsEmpty == true)
+        {
+            try
+            {
+                // Create a master seed file using SeedGenerator and write it to the app-seeds.json location
+                var masterPath = new SeedGenerator().WriteMasterStream(fn);
+                _logger.LogInformation("Master seed file created at: {path}", masterPath);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to create master seed file at {path}", fn);
+                throw;
+            }
+        }
+
+        //Create a seeder
+
         var seeder = new SeedGenerator(fn);
 
         //Seeding the  quotes table

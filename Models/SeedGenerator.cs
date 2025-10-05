@@ -329,7 +329,7 @@ namespace Seido.Utilities.SeedGenerator
             return retList;
         }
         #endregion
- 
+
         #region initialize master content
         SeedJsonContent CreateMasterSeedFile()
         {
@@ -593,7 +593,28 @@ namespace Seido.Utilities.SeedGenerator
         #region create master json file
         public string WriteMasterStream()
         {
-            return CreateMasterSeedFile().WriteFile("master-seeds.json");
+            return CreateMasterSeedFile().WriteFile("app-seeds.json");
+        }
+
+        // Write master seed JSON directly to the provided file path (full or relative).
+        // This bypasses the default Documents/SeedGenerator folder and allows writing to
+        // an explicit path such as the application's working directory.
+        public string WriteMasterStream(string filePath)
+        {
+            var seeds = CreateMasterSeedFile();
+
+            var fullPath = Path.IsPathRooted(filePath) ? filePath : Path.GetFullPath(filePath);
+            var dir = Path.GetDirectoryName(fullPath);
+            if (!string.IsNullOrEmpty(dir) && !Directory.Exists(dir))
+                Directory.CreateDirectory(dir);
+
+            using (Stream s = File.Create(fullPath))
+            using (TextWriter writer = new StreamWriter(s))
+            {
+                writer.Write(JsonConvert.SerializeObject(seeds, Formatting.Indented));
+            }
+
+            return fullPath;
         }
         #endregion
 
@@ -666,7 +687,7 @@ namespace Seido.Utilities.SeedGenerator
         {
             #region Country towards json file
             string _jsonCountry;
-            public string jsonCountry { get => _jsonCountry; set { _jsonCountry = value; }}
+            public string jsonCountry { get => _jsonCountry; set { _jsonCountry = value; } }
             #endregion
 
             [JsonIgnore]
@@ -881,19 +902,20 @@ namespace Seido.Utilities.SeedGenerator
                 return Path.Combine(documentPath, name);
             }
 
-            public static bool FileExists(string FileName){
+            public static bool FileExists(string FileName)
+            {
 
                 var fn = Path.GetFileName(FileName);
                 if (fn == FileName)
                 {
                     //no path in FileName use default directory
-                   return File.Exists(fname(FileName));
+                    return File.Exists(fname(FileName));
                 }
-    
+
                 return File.Exists(FileName);
             }
         }
-    #endregion
+        #endregion
     }
 }
 
