@@ -29,9 +29,10 @@ public static class SecretsExtensions
         config.SetBasePath(currentDir)
                 .AddJsonFile(_appsettingfile, optional: true, reloadOnChange: true);
 #endif
+        //assume production unless we are in development
         Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Production");
 
-        // Build a temporary configuration to read the SecretStorage setting
+        // Build a temporary configuration to read the SecretStorage setting from appsettings.json
         var tempConfig = config.Build();
         string secretStorage = tempConfig.GetValue<string>("ApplicationSecrets:SecretStorage");
         Console.WriteLine($"Using Secret Storage: {secretStorage}");
@@ -40,25 +41,30 @@ public static class SecretsExtensions
         if (environment.IsDevelopment())
         {
             Environment.SetEnvironmentVariable("ASPNETCORE_ENVIRONMENT", "Development");
+
+            //In development mode user secrets are always used, even to read the Azure Key Vault access parameters
+            // Load user secrets from Configuration project assembly
             var assembly = System.Reflection.Assembly.Load("Configuration");
+            config.AddUserSecrets(assembly);
+
+            // Build a temporary configuration to read from appsettings.json and user secrets
+            tempConfig = config.Build();
+        
+            // Read the UserSecretsId programmatically in order to display it during migration runs
+            var userSecretsIdAttribute = assembly.GetCustomAttributes(typeof(UserSecretsIdAttribute), false)
+                .FirstOrDefault() as UserSecretsIdAttribute;
+            var userSecretsId = userSecretsIdAttribute?.UserSecretsId;
+            Console.WriteLine($"User Secrets ID: {userSecretsId}");
 
             if (secretStorage == "UserSecrets")
             {
-                // In development, we use user secrets
+                // In development, but only use user secrets
                 Console.WriteLine("Using User Secrets in Development environment.");
 
-                // Load user secrets from Configuration project assembly
-                config.AddUserSecrets(assembly);
-
-                // Read the UserSecretsId programmatically
-                var userSecretsIdAttribute = assembly.GetCustomAttributes(typeof(UserSecretsIdAttribute), false)
-                    .FirstOrDefault() as UserSecretsIdAttribute;
-                var userSecretsId = userSecretsIdAttribute?.UserSecretsId;
-                Console.WriteLine($"Using User Secrets ID: {userSecretsId}");
             }
             else
             {
-                throw new InvalidOperationException("Invalid SecretStorage value. Use 'UserSecrets'.");
+                throw new InvalidOperationException("Invalid SecretStorage value. Use 'UserSecrets' or 'AzureKeyVault'.");
             }
         }
         else
